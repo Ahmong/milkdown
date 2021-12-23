@@ -33,10 +33,10 @@
     ],
     "dependencies": {
         "@milkdown/ctx": "workspace:*",
-        "@milkdown/transformer": "workspace:*",
         "@milkdown/design-system": "workspace:*",
         "@milkdown/exception": "workspace:*",
         "@milkdown/prose": "workspace:*",
+        "@milkdown/transformer": "workspace:*",
         "remark": "^14.0.1",
         "tslib": "^2.3.1"
     }

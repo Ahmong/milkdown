@@ -40,9 +40,9 @@
         "tslib": "^2.3.1"
     },
     "devDependencies": {
-        "@milkdown/prose": "workspace:*",
         "@milkdown/core": "workspace:*",
-        "@milkdown/utils": "workspace:*",
-        "@milkdown/design-system": "workspace:*"
+        "@milkdown/design-system": "workspace:*",
+        "@milkdown/prose": "workspace:*",
+        "@milkdown/utils": "workspace:*"
     }
 }

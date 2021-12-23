@@ -39,9 +39,9 @@
     },
     "devDependencies": {
         "@milkdown/core": "workspace:*",
-        "@milkdown/prose": "workspace:*",
-        "@milkdown/preset-commonmark": "workspace:*",
         "@milkdown/plugin-slash": "workspace:*",
+        "@milkdown/preset-commonmark": "workspace:*",
+        "@milkdown/prose": "workspace:*",
         "@milkdown/theme-nord": "workspace:*",
         "vue": "^3.0.0"
     }

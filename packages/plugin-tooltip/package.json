@@ -29,8 +29,8 @@
     ],
     "peerDependencies": {
         "@milkdown/core": "*",
-        "@milkdown/preset-gfm": "*",
-        "@milkdown/plugin-math": "*"
+        "@milkdown/plugin-math": "*",
+        "@milkdown/preset-gfm": "*"
     },
     "dependencies": {
         "@emotion/css": "^11.1.3",
@@ -39,9 +39,9 @@
     },
     "devDependencies": {
         "@milkdown/core": "workspace:*",
-        "@milkdown/prose": "workspace:*",
-        "@milkdown/preset-gfm": "workspace:*",
         "@milkdown/design-system": "workspace:*",
-        "@milkdown/plugin-math": "workspace:*"
+        "@milkdown/plugin-math": "workspace:*",
+        "@milkdown/preset-gfm": "workspace:*",
+        "@milkdown/prose": "workspace:*"
     }
 }
