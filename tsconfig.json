@@ -2,6 +2,7 @@
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
         "emitDeclarationOnly": false,
+        "sourceMap": true,
         "noEmit": true
     },
     "exclude": ["node_modules", "lib"]
