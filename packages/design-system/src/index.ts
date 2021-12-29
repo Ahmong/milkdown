@@ -2,7 +2,7 @@
 import { injectGlobal } from '@emotion/css';
 
 import * as D from './default-value';
-import { obj2color, obj2var } from './transformer';
+import { obj2color, obj2var, themeColor } from './transformer';
 import { Color, PR, ThemePack, ThemeTool } from './types';
 
 export const injectVar = (themePack: ThemePack) => {
@@ -23,6 +23,9 @@ export const pack2Tool = (themePack: ThemePack): ThemeTool => {
     const palette = (key: Color, alpha = 1) => {
         return `rgba(var(--${key}), ${alpha})`;
     };
+    const extColor = (key: string, alpha = 1) => {
+        return themePack.extColor?.includes(key) ? `rgba(var(--${key}), ${alpha})` : '';
+    };
     const toMap = <T extends string, U>(x: PR<T, U> = {}): PR<T> =>
         Object.fromEntries(
             Object.keys(x).map((k) => {
@@ -30,8 +33,9 @@ export const pack2Tool = (themePack: ThemePack): ThemeTool => {
             }),
         ) as PR<T>;
 
-    const mixinTool: Pick<ThemeTool, 'palette' | 'size' | 'font'> = {
+    const mixinTool: Pick<ThemeTool, 'palette' | 'extColor' | 'size' | 'font'> = {
         palette,
+        extColor,
         size: {
             ...D.size,
             ...toMap(size),
@@ -64,6 +68,15 @@ export const pack2Tool = (themePack: ThemePack): ThemeTool => {
     global?.(tool);
 
     return tool;
+};
+
+export const injetExtColor = (exColor: Record<string, string>) => {
+    const css = injectGlobal;
+    css`
+        :root {
+            ${obj2var(exColor, themeColor)};
+        }
+    `;
 };
 
 export type { Color, Font, Icon, Size, ThemePack, ThemeTool } from './types';

@@ -9,6 +9,7 @@ export const themeToolCtx = createSlice<ThemeTool>(
         size: {} as never,
         slots: {} as never,
         palette: () => '',
+        extColor: () => '',
     },
     'ThemeTool',
 );
