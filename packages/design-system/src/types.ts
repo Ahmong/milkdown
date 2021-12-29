@@ -56,6 +56,7 @@ export type MixinFactory = {
 export type ThemePack = {
     scope?: string;
     color?: PR<Color>;
+    extColor?: string[];
     font?: PR<Font, string[]>;
     size?: PR<Size>;
     mixin?: (utils: Omit<ThemeTool, 'slots' | 'global' | 'mixin'>) => Partial<MixinFactory>;
@@ -65,6 +66,7 @@ export type ThemePack = {
 
 export type ThemeTool = {
     palette: (key: Color, alpha?: number) => string;
+    extColor: (key: string, alpha?: number) => string;
     mixin: MixinFactory;
     slots: Slots;
     font: Record<Font, string>;
