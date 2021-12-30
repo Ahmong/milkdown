@@ -20,7 +20,9 @@
         "preview": "cd gh-pages && run preview",
         "build:packs": "pnpm --filter=./packages run build",
         "build:doc": "pnpm run build --filter @milkdown/gh-pages",
-        "yarn:build:packs": "yarn workspaces foreach -vp --topological-dev --exclude 'milkdown,gh-pages' run build",
+        "yarn:build:packs": "yarn workspaces foreach -vp --topological-dev --exclude '{milkdown,gh-pages}' run build",
+        "yarn:work:build": "yarn workspaces foreach -vp --include '{@milkdown/design-system,theme-zwnord,preset-zwmarkdown}' run build",
+        "yarn:work:watch": "yarn workspaces foreach -p --include '{preset-zwmarkdown,theme-zwnord}' run watch",
         "yarn:build:doc": "cd gh-pages && yarn run build",
         "postinstall": "husky install",
         "changeset": "changeset",
@@ -65,5 +67,8 @@
         "tslib": "^2.3.1",
         "typescript": "~4.4.4",
         "vite": "^2.4.4"
+    },
+    "dependencies": {
+        "polished": "^4.1.3"
     }
 }
