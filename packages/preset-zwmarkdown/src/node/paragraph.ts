@@ -1,4 +1,5 @@
 /* Copyright 2021, Milkdown by Mirone. */
+/* Copyright 2021, Milkdown by Mirone. */
 import { css } from '@emotion/css';
 import { createCmd, createCmdKey } from '@milkdown/core';
 import { setBlockType } from '@milkdown/prose';
@@ -16,7 +17,7 @@ export const paragraph = createNode<Keys>((utils, options) => {
         ? null
         : css`
               font-size: 1rem;
-              line-height: 1.5;
+              line-height: 1.5rem;
               letter-spacing: 0.5px;
           `;
 

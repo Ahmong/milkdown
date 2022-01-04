@@ -1,4 +1,5 @@
 /* Copyright 2021, Milkdown by Mirone. */
+/* Copyright 2021, Milkdown by Mirone. */
 import { css } from '@emotion/css';
 import { createCmd, createCmdKey } from '@milkdown/core';
 import { wrapIn, wrappingInputRule } from '@milkdown/prose';
@@ -16,9 +17,13 @@ export const blockquote = createNode<Keys>((utils) => {
     const style = utils.getStyle(
         (themeTool) =>
             css`
-                padding-left: 1.875rem;
                 line-height: 1.75rem;
-                border-left: 4px solid ${themeTool.palette('primary')};
+                & > * {
+                    margin-left: 2rem;
+                    margin-right: 2.15rem;
+                    border-left: 4px solid ${themeTool.extColor('blockQuoteIndent')};
+                    padding-left: 1rem;
+                }
                 * {
                     font-size: 1rem;
                     line-height: 1.5rem;
