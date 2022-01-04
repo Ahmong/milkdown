@@ -733,12 +733,14 @@ __metadata:
     postcss-import: ^14.0.1
     postcss-mixins: ^9.0.0
     postcss-nested: ^5.0.5
+    preset-zwmarkdown: "workspace:*"
     prism-themes: ^1.7.0
     react: ^17.0.2
     react-dom: ^17.0.2
     react-loading-skeleton: ^3.0.0
     react-router-dom: ^6.0.0
     react-spinners: ^0.11.0
+    theme-zwnord: "workspace:*"
     tslib: ^2.3.1
     unist-util-visit: ^4.0.0
     vite: ^2.4.4
@@ -5072,6 +5074,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"preset-zwmarkdown@workspace:*, preset-zwmarkdown@workspace:../packages/preset-zwmarkdown":
+  version: 0.0.0-use.local
+  resolution: "preset-zwmarkdown@workspace:../packages/preset-zwmarkdown"
+  dependencies:
+    "@emotion/css": ^11.1.3
+    "@milkdown/core": "workspace:*"
+    "@milkdown/design-system": "workspace:*"
+    "@milkdown/prose": "workspace:*"
+    "@milkdown/utils": "workspace:*"
+    remark-inline-links: ^6.0.0
+    tslib: ^2.3.1
+  peerDependencies:
+    "@milkdown/core": "*"
+  languageName: unknown
+  linkType: soft
+
 "pretty-hrtime@npm:^1.0.3":
   version: 1.0.3
   resolution: "pretty-hrtime@npm:1.0.3"
@@ -5816,6 +5834,19 @@ __metadata:
   checksum: a04c07bb9e2d8f46776517d4618f2406fb977a74d914ad98b264fc3db0fe8224da5bec11e5f8902c5b9bcb8ace22d95fbe3c7b36b8593b7dfc8391a25898f32f
   languageName: node
   linkType: hard
+
+"theme-zwnord@workspace:*, theme-zwnord@workspace:../packages/theme-zwnord":
+  version: 0.0.0-use.local
+  resolution: "theme-zwnord@workspace:../packages/theme-zwnord"
+  dependencies:
+    "@emotion/css": ^11.1.3
+    "@milkdown/core": "workspace:*"
+    "@milkdown/design-system": "workspace:*"
+    "@milkdown/prose": "workspace:*"
+  peerDependencies:
+    "@milkdown/core": "*"
+  languageName: unknown
+  linkType: soft
 
 "tiny-emitter@npm:^2.1.0":
   version: 2.1.0

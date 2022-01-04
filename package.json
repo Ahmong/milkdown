@@ -4,7 +4,8 @@
     "packageManager": "yarn@3.1.1",
     "private": true,
     "workspaces": [
-        "packages/*"
+        "packages/*",
+        "../prosemirror/prosemirror-*"
     ],
     "scripts": {
         "test": "yarn test:doc && yarn test:lint && yarn test:tsc && yarn test:unit",
@@ -18,16 +19,21 @@
         "doc": "cd gh-pages && run start",
         "start": "concurrently -n watch,doc \"pnpm watch\" \"pnpm doc\"",
         "preview": "cd gh-pages && run preview",
-        "build:packs": "pnpm --filter=./packages run build",
-        "build:doc": "pnpm run build --filter @milkdown/gh-pages",
-        "yarn:build:packs": "yarn workspaces foreach -vp --topological-dev --exclude '{milkdown,gh-pages}' run build",
-        "yarn:work:build": "yarn workspaces foreach -vp --include '{@milkdown/design-system,theme-zwnord,preset-zwmarkdown}' run build",
-        "yarn:work:watch": "yarn workspaces foreach -p --include '{preset-zwmarkdown,theme-zwnord}' run watch",
-        "yarn:build:doc": "cd gh-pages && yarn run build",
+        "build:prosemirror": "yarn workspaces foreach -vp --topological --include 'prosemirror-*' run build",
+        "build:md-core": "yarn workspaces foreach -vp --topological --include '@milkdown/!(plugin-*|preset-*|theme-*)' run build",
+        "build:md-plugins": "yarn workspaces foreach -vp --topological-dev --include '@milkdown/{theme-*,preset-*,plugin-*}' run build",
+        "build:milkdown": "yarn build:md-core && yarn build:md-plugins",
+        "build:packs": "yarn build:prosemirror && yarn build:milkdown",
+        "work:build": "yarn workspaces foreach -vp --include '{theme-zwnord,preset-zwmarkdown}' run build",
+        "work:watch": "yarn workspaces foreach -p --include '{theme-zwnord,preset-zwmarkdown}' run watch",
+        "build:doc": "cd gh-pages && yarn run build",
         "postinstall": "husky install",
         "changeset": "changeset",
         "release": "changeset publish",
-        "clear": "rimraf packages/*/{lib,tsconfig.tsbuildinfo,node_modules,.rollup.cache} && rimraf node_modules",
+        "clear:milkdown": "rimraf packages/*/{lib,tsconfig.tsbuildinfo,node_modules,.rollup.cache,node_modules}",
+        "clear:prosemirror": "rimraf prosemirror/*/{node_modules,dist} || rimraf prosemirror/node_modules",
+        "clear": "run clear:milkdown || run clear:prosemirror",
+        "clear:root": "rimraf node_modules",
         "commit": "git-cz"
     },
     "devDependencies": {
