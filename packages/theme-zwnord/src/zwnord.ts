@@ -133,22 +133,33 @@ export const themeDark = {
     textA: Nord.frost3,
     textAHover: Nord.frost2,
     textMark: transparentize(0.3, Nord.frost1),
-    preCode: Nord.light0,
     textHighlightBg: Nord.dark3,
+    blockQuoteIndent: Nord.frost0,
+    preCode: Nord.light0,
+    inlineCode: lighten(0.1, Nord.frost0),
     interactiveAccent: Nord.frost0,
     interactiveBefore: Nord.dark3,
     backgroundModifierBorder: Nord.dark2,
     textAccent: Nord.auroraOrange,
     interactiveAccentRgb: Nord.auroraOrange,
-    inlineCode: lighten(0.1, Nord.frost0),
-    codeBlock: Nord.frost2,
     vimCursor: Nord.auroraOrange,
     textSelection: Nord.dark3,
 };
 
+export const darkColor: ThemePack['color'] = {
+    shadow: Nord.dark1,
+    primary: Nord.frost0,
+    secondary: Nord.frost2,
+    neutral: Nord.light0, // main text color
+    solid: Nord.light1,
+    line: transparentize(0.8, Nord.frost3),
+    background: Nord.dark1,
+    surface: Nord.dark0, // canvas color of editor area
+};
+
 export const themeLight = {
-    backgroundPrimary: ZwPalette.light0,
-    backgroundPrimaryAlt: ZwPalette.light0,
+    backgroundPrimary: Nord.light0,
+    backgroundPrimaryAlt: Nord.light0,
     backgroundSecondary: Nord.light2,
     backgroundSecondaryAlt: Nord.light1,
     textNormal: Nord.dark1,
@@ -160,19 +171,20 @@ export const themeLight = {
     textTitleH4: mix(0.4, Nord.auroraOrange, Nord.auroraRed),
     textTitleH5: mix(0.4, Nord.auroraOrange, Nord.auroraGreen),
     textTitleH6: mix(0.2, Nord.auroraYellow, Nord.auroraPurple),
-    textLink: Nord.frost0,
+    // textLink: Nord.frost3,
+    textLink: saturate(0.2, Nord.frost3),
     textA: Nord.frost3,
     textAHover: Nord.frost1,
     textMark: transparentize(0.3, Nord.frost1),
-    preCode: Nord.light2,
     textHighlightBg: Nord.light0,
+    blockQuoteIndent: Nord.frost0,
+    preCode: Nord.light2,
+    inlineCode: darken(0.3, Nord.frost0),
     interactiveAccent: Nord.frost0,
     interactiveBefore: Nord.light0,
     backgroundModifierBorder: Nord.light1,
     textAccent: Nord.auroraOrange,
     interactiveAccentRgb: Nord.auroraOrange,
-    inlineCode: Nord.frost1,
-    codeBlock: Nord.frost1,
     vimCursor: Nord.auroraOrange,
     textSelection: Nord.light0,
 };
@@ -181,22 +193,11 @@ export const lightColor: ThemePack['color'] = {
     shadow: Nord.dark1,
     primary: Nord.frost0,
     secondary: Nord.frost2,
-    neutral: Nord.dark0,
+    neutral: Nord.dark0, // main text color
     solid: Nord.dark3,
     line: Nord.light0,
     background: Nord.light2,
-    surface: ZwPalette.light0,
-};
-
-export const darkColor: ThemePack['color'] = {
-    shadow: Nord.dark1,
-    primary: Nord.frost0,
-    secondary: Nord.frost2,
-    neutral: Nord.light0,
-    solid: Nord.light1,
-    line: transparentize(0.8, Nord.frost3),
-    background: Nord.dark1,
-    surface: Nord.dark0,
+    surface: Nord.light0, // canvas color of editor area
 };
 
 export const color = {
