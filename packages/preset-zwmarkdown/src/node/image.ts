@@ -2,12 +2,16 @@
 import { css } from '@emotion/css';
 import { createCmd, createCmdKey, themeToolCtx } from '@milkdown/core';
 import type { Icon } from '@milkdown/design-system';
-import { findSelectedNodeOfType, InputRule } from '@milkdown/prose';
+import { findSelectedNodeOfType, InputRule, Plugin, PluginKey } from '@milkdown/prose';
 import { createNode } from '@milkdown/utils';
+import { ImageStateField } from './image-state-field';
 
+export * from './image-state-field';
 export const ModifyImage = createCmdKey<string>();
 export const InsertImage = createCmdKey<string>();
 const id = 'image';
+const imgPluginKey = new PluginKey(id);
+
 export type ImageOptions = {
     isBlock: boolean;
     placeholder: {
@@ -249,6 +253,14 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 },
             ),
         ],
+        prosePlugins: (_type, _ctx) => {
+            return [
+                new Plugin({
+                    key: imgPluginKey, 
+                    state: new ImageStateField(),
+                }),
+            ]
+        },
         view: (ctx) => (node, view, getPos) => {
             const nodeType = node.type;
             const createIcon = ctx.get(themeToolCtx).slots.icon;
@@ -277,30 +289,37 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
 
                 img.onerror = () => {
                     const { tr } = view.state;
-                    const _tr = tr.setNodeMarkup(getPos(), nodeType, {
-                        ...node.attrs,
-                        src,
-                        loading: false,
-                        failed: true,
-                    });
+                    let _tr = tr
+                        .setNodeMarkup (getPos(), nodeType, {
+                            ...node.attrs,
+                            src,
+                            loading: false,
+                            failed: true,
+                        })
+                        .setMeta ('NoContentChanged', true);
                     view.dispatch(_tr);
                 };
 
                 img.onload = () => {
                     const { tr } = view.state;
-                    const _tr = tr.setNodeMarkup(getPos(), nodeType, {
-                        ...node.attrs,
-                        width: img.width,
-                        src,
-                        loading: false,
-                        failed: false,
-                    });
+                    let _tr = tr
+                        .setNodeMarkup (getPos(), nodeType, {
+                            ...node.attrs,
+                            width: img.width,
+                            src,
+                            loading: false,
+                            failed: false,
+                        })
+                        .setMeta ('NoContentChanged', true);
                     view.dispatch(_tr);
                 };
             };
 
             const { src, loading, title, alt, width } = node.attrs;
-            content.src = src;
+            const basePath = imgPluginKey.getState(view.state)?.imageBasePath
+            content.src = basePath ? basePath  + '/' + src : src;
+            console.log('basePath=', basePath, '; src=', src)
+            console.log('content.src=', content.src)
             content.title = title || alt;
             content.alt = alt;
             content.width = width;
@@ -318,7 +337,7 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                     if (updatedNode.type.name !== id) return false;
 
                     const { src, alt, title, loading, failed, width } = updatedNode.attrs;
-                    content.src = src;
+                    content.src = basePath + '/' + src;
                     content.alt = alt;
                     content.title = title || alt;
                     content.width = width;
