@@ -1,6 +1,6 @@
 /* Copyright 2021, Milkdown by Mirone. */
 import { css } from '@emotion/css';
-import { createCmd, createCmdKey, themeToolCtx } from '@milkdown/core';
+import { createCmd, createCmdKey, Ctx, themeToolCtx } from '@milkdown/core';
 import type { Icon } from '@milkdown/design-system';
 import { findSelectedNodeOfType, InputRule } from '@milkdown/prose';
 import { createNode } from '@milkdown/utils';
@@ -19,6 +19,17 @@ export type ImageOptions = {
         failed: string;
     };
 };
+
+const url2src = (ctx: Ctx, url: string): string => {
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        const baseDir = getParserOption(ctx, baseDirDefault)
+        const protocolstr = getParserOption(ctx, repoSchemeDefault) + '://'
+        return protocolstr + baseDir + url
+    } else {
+        return url
+    }
+}
+
 export const image = createNode<string, ImageOptions>((utils, options) => {
     const placeholder = {
         loading: 'Loading...',
@@ -197,18 +208,13 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
             parseMarkdown: {
                 match: ({ type }) => type === id,
                 runner: (state, node, type) => {
-                    const url = node.url as string;
+                    const dataUrl = node.url as string;
                     const alt = node.alt as string;
                     const title = node.title as string;
-                    let src = url;
-                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                        const baseDir = getParserOption(ctx, baseDirDefault)
-                        const protocolstr = getParserOption(ctx, repoSchemeDefault) + '://'
-                        src = protocolstr + baseDir + url
-                    }
+                    const src = url2src(ctx, dataUrl);
                     state.addNode(type, {
-                        dataUrl: url,
-                        src: src,
+                        dataUrl,
+                        src,
                         alt,
                         title,
                     });
@@ -225,11 +231,12 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 },
             },
         }),
-        commands: (type) => [
-            createCmd(InsertImage, (src = '') => (state, dispatch) => {
+        commands: (type, ctx) => [
+            createCmd(InsertImage, (dataUrl = '') => (state, dispatch) => {
                 if (!dispatch) return true;
                 const { tr } = state;
-                const node = type.create({ src });
+                const src = url2src(ctx, dataUrl);
+                const node = type.create({ dataUrl, src });
                 if (!node) {
                     return true;
                 }
@@ -237,13 +244,15 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 dispatch(_tr.scrollIntoView());
                 return true;
             }),
-            createCmd(ModifyImage, (src = '') => (state, dispatch) => {
+            createCmd(ModifyImage, (dataUrl = '') => (state, dispatch) => {
                 const node = findSelectedNodeOfType(state.selection, type);
                 if (!node) return false;
 
                 const { tr } = state;
+                const src = url2src(ctx, dataUrl);
                 dispatch?.(
-                    tr.setNodeMarkup(node.pos, undefined, { ...node.node.attrs, loading: true, src }).scrollIntoView(),
+                    tr.setNodeMarkup(node.pos, undefined, { ...node.node.attrs, loading: true, dataUrl, src })
+                      .scrollIntoView(),
                 );
 
                 return true;
@@ -292,11 +301,14 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
 
             const setHtmlImgAttrs = (img: HTMLImageElement, pmNode: typeof node) => {
                 img.onerror = () => {
+                    const src = img.src;
+                    const dataUrl = img.getAttribute('data-url');
                     const { tr } = view.state;
                     let _tr = tr
                         .setNodeMarkup (getPos(), nodeType, {
                             ...node.attrs,
-                            /* src, */
+                            dataUrl,
+                            src,
                             loading: false,
                             failed: true,
                         })
@@ -305,12 +317,14 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 };
 
                 img.onload = () => {
+                    const src = img.src;
+                    const dataUrl = img.getAttribute('data-url');
                     const { tr } = view.state;
                     let _tr = tr
                         .setNodeMarkup (getPos(), nodeType, {
                             ...node.attrs,
-                            /* width: img.width, */
-                            /* src, */
+                            dataUrl,
+                            src,
                             loading: false,
                             failed: false,
                         })
@@ -323,8 +337,8 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 if (width) img.width = width;
                 img.title = title || alt;
                 img.alt = alt;
-                img.src = src
                 img.setAttribute('data-url', dataUrl)
+                if (img.src !== src) img.src = src;
             }
 
             setHtmlImgAttrs(content, node);
