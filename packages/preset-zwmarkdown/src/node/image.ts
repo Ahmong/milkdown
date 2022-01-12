@@ -2,15 +2,14 @@
 import { css } from '@emotion/css';
 import { createCmd, createCmdKey, themeToolCtx } from '@milkdown/core';
 import type { Icon } from '@milkdown/design-system';
-import { findSelectedNodeOfType, InputRule, Plugin, PluginKey } from '@milkdown/prose';
+import { findSelectedNodeOfType, InputRule } from '@milkdown/prose';
 import { createNode } from '@milkdown/utils';
-import { ImageStateField } from './image-state-field';
+import { baseDirDefault, getParserOption, repoSchemeDefault } from '../parser-option';
 
 export * from './image-state-field';
 export const ModifyImage = createCmdKey<string>();
 export const InsertImage = createCmdKey<string>();
 const id = 'image';
-const imgPluginKey = new PluginKey(id);
 
 export type ImageOptions = {
     isBlock: boolean;
@@ -141,7 +140,7 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
 
     return {
         id: 'image',
-        schema: () => ({
+        schema: (ctx) => ({
             inline: true,
             group: 'inline',
             selectable: true,
@@ -151,6 +150,7 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
             defining: true,
             isolating: true,
             attrs: {
+                dataUrl: { default: '' },
                 src: { default: '' },
                 alt: { default: null },
                 title: { default: null },
@@ -168,7 +168,8 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                         return {
                             failed: dom.classList.contains('failed'),
                             loading: dom.classList.contains('loading'),
-                            src: dom.getAttribute('src') || '',
+                            dataUrl: dom.getAttribute('data-url'),
+                            src: dom.getAttribute('src'),
                             alt: dom.getAttribute('alt'),
                             title: dom.getAttribute('title') || dom.getAttribute('alt'),
                             width: dom.getAttribute('width') || 0,
@@ -180,7 +181,9 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 return [
                     'img',
                     {
+                        referrerpolicy: 'no-referrer',
                         ...node.attrs,
+                        'data-url': node.attrs.dataUrl,
                         class: utils.getClassName(
                             node.attrs,
                             id,
@@ -197,8 +200,15 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                     const url = node.url as string;
                     const alt = node.alt as string;
                     const title = node.title as string;
+                    let src = url;
+                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                        const baseDir = getParserOption(ctx, baseDirDefault)
+                        const protocolstr = getParserOption(ctx, repoSchemeDefault) + '://'
+                        src = protocolstr + baseDir + url
+                    }
                     state.addNode(type, {
-                        src: url,
+                        dataUrl: url,
+                        src: src,
                         alt,
                         title,
                     });
@@ -209,7 +219,7 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 runner: (state, node) => {
                     state.addNode('image', undefined, undefined, {
                         title: node.attrs.title,
-                        url: node.attrs.src,
+                        url: node.attrs.dataUrl,
                         alt: node.attrs.alt,
                     });
                 },
@@ -253,14 +263,6 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 },
             ),
         ],
-        prosePlugins: (_type, _ctx) => {
-            return [
-                new Plugin({
-                    key: imgPluginKey, 
-                    state: new ImageStateField(),
-                }),
-            ]
-        },
         view: (ctx) => (node, view, getPos) => {
             const nodeType = node.type;
             const createIcon = ctx.get(themeToolCtx).slots.icon;
@@ -281,18 +283,20 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 icon = nextIcon;
             };
 
-            const loadImage = (src: string) => {
+            const setImageLoading = (/*src: string*/) => {
                 container.classList.add('system', 'loading');
                 setIcon('loading');
-                const img = document.createElement('img');
-                img.src = src;
+                /* const img = document.createElement('img'); */
+                /* img.src = src; */
+            };
 
+            const setHtmlImgAttrs = (img: HTMLImageElement, pmNode: typeof node) => {
                 img.onerror = () => {
                     const { tr } = view.state;
                     let _tr = tr
                         .setNodeMarkup (getPos(), nodeType, {
                             ...node.attrs,
-                            src,
+                            /* src, */
                             loading: false,
                             failed: true,
                         })
@@ -305,30 +309,31 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                     let _tr = tr
                         .setNodeMarkup (getPos(), nodeType, {
                             ...node.attrs,
-                            width: img.width,
-                            src,
+                            /* width: img.width, */
+                            /* src, */
                             loading: false,
                             failed: false,
                         })
                         .setMeta ('NoContentChanged', true);
                     view.dispatch(_tr);
                 };
-            };
 
-            const { src, loading, title, alt, width } = node.attrs;
-            const basePath = imgPluginKey.getState(view.state)?.imageBasePath
-            content.src = basePath ? basePath  + '/' + src : src;
-            console.log('basePath=', basePath, '; src=', src)
-            console.log('content.src=', content.src)
-            content.title = title || alt;
-            content.alt = alt;
-            content.width = width;
+                const { dataUrl, src, title, alt, width } = pmNode.attrs;
+                img.referrerPolicy = 'no-referrer';
+                if (width) img.width = width;
+                img.title = title || alt;
+                img.alt = alt;
+                img.src = src
+                img.setAttribute('data-url', dataUrl)
+            }
 
+            setHtmlImgAttrs(content, node);
+            const { src, loading } = node.attrs;
             if (src.length === 0) {
                 container.classList.add('system', 'empty');
                 setIcon('image');
             } else if (loading) {
-                loadImage(src);
+                setImageLoading()
             }
 
             return {
@@ -336,13 +341,10 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 update: (updatedNode) => {
                     if (updatedNode.type.name !== id) return false;
 
-                    const { src, alt, title, loading, failed, width } = updatedNode.attrs;
-                    content.src = basePath + '/' + src;
-                    content.alt = alt;
-                    content.title = title || alt;
-                    content.width = width;
+                    setHtmlImgAttrs(content, updatedNode);
+                    const { src, loading, failed } = updatedNode.attrs;
                     if (loading) {
-                        loadImage(src);
+                        setImageLoading();
                         return true;
                     }
                     if (failed) {

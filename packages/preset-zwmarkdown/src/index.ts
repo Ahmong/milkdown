@@ -23,6 +23,7 @@ import { zwmarkdownPlugins } from './plugin';
 export * from './mark';
 export * from './node';
 export * from './supported-keys';
+export * from './parser-option';
 
 export const zwmarkdownNodes = AtomList.create([...nodes, ...marks]);
 export { zwmarkdownPlugins };

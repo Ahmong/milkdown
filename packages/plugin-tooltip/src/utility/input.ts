@@ -122,7 +122,7 @@ export const updateImageView: Updater = (view, $) => {
     if (!result) return;
     const { node } = result;
 
-    const value = node.attrs.src;
+    const value = node.attrs.dataUrl;
     firstChild.value = value;
     if (!value) {
         lastElementChild.classList.add('disable');
