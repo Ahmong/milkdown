@@ -248,12 +248,14 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                 const node = findSelectedNodeOfType(state.selection, type);
                 if (!node) return false;
 
-                const { tr } = state;
-                const src = url2src(ctx, dataUrl);
-                dispatch?.(
-                    tr.setNodeMarkup(node.pos, undefined, { ...node.node.attrs, loading: true, dataUrl, src })
-                      .scrollIntoView(),
-                );
+                if (node.node.attrs.dataUrl !== dataUrl) {
+                    const { tr } = state;
+                    const src = url2src(ctx, dataUrl);
+                    dispatch?.(
+                        tr.setNodeMarkup(node.pos, undefined, { ...node.node.attrs, loading: true, dataUrl, src })
+                        .scrollIntoView(),
+                    );
+                }
 
                 return true;
             }),
