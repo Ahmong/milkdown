@@ -1,3 +1,14 @@
+/**
+ * Author        : Ahmong
+ * Date          : 2022-03-21 01:22
+ * LastEditTime  : 2022-03-21 01:33
+ * LastEditors   : Ahmong
+ * License       : GNU GPL v3
+ * ---
+ * Description   : '头部注释'
+ * ---
+ * FilePath      : /milkdown/packages/preset-zwmarkdown/src/index.ts
+**/
 /* Copyright 2021, Milkdown by Mirone. */
 import { AtomList } from '@milkdown/utils';
 

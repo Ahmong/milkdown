@@ -180,7 +180,7 @@ export const image = createNode<string, ImageOptions>((utils, options) => {
                             failed: dom.classList.contains('failed'),
                             loading: dom.classList.contains('loading'),
                             dataUrl: dom.getAttribute('data-url'),
-                            src: dom.getAttribute('src'),
+                            src: dom.getAttribute('src') || '',
                             alt: dom.getAttribute('alt'),
                             title: dom.getAttribute('title') || dom.getAttribute('alt'),
                             width: dom.getAttribute('width') || 0,
