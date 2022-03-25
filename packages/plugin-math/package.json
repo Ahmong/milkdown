@@ -29,8 +29,8 @@
         "@milkdown/prose": "^5.4.0"
     },
     "dependencies": {
-        "@types/katex": "^0.11.1",
         "@milkdown/utils": "workspace:*",
+        "@types/katex": "^0.11.1",
         "katex": "^0.15.0",
         "remark-math": "^5.1.0",
         "tslib": "^2.3.1"
