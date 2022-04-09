@@ -120,7 +120,11 @@ export const listener: MilkdownPlugin = (pre) => {
                     if (!tr.docChanged) return;
                     // filter the tr with meta data.
                     // Don't mix normal update of content with decorate change!
-                    if (!tr.isGeneric) return;
+                    if (!tr.isGeneric) {
+                        if (true == tr.getMeta('noTriggerUpdated')) {
+                            return;
+                        }
+                    }
                     const { doc } = tr;
                     if (listeners.updated.length > 0 && (prevDoc == null || prevDoc !== doc)) {
                         listeners.updated.forEach((fn) => {
