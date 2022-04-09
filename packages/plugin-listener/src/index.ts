@@ -118,6 +118,9 @@ export const listener: MilkdownPlugin = (pre) => {
                 },
                 apply: (tr) => {
                     if (!tr.docChanged) return;
+                    // filter the tr with meta data.
+                    // Don't mis normal update of content with decorate change!
+                    if (!tr.isGeneric) return;
                     const { doc } = tr;
                     if (listeners.updated.length > 0 && (prevDoc == null || prevDoc !== doc)) {
                         listeners.updated.forEach((fn) => {
