@@ -21,9 +21,9 @@
         "nord"
     ],
     "devDependencies": {
-        "@milkdown/prose": "workspace:*",
         "@milkdown/core": "workspace:*",
-        "@milkdown/design-system": "workspace:*"
+        "@milkdown/design-system": "workspace:*",
+        "@milkdown/prose": "workspace:*"
     },
     "peerDependencies": {
         "@milkdown/core": "^5.4.0",
