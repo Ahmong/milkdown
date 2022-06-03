@@ -38,12 +38,14 @@ export const commands: MilkdownPlugin = (pre) => {
     const container = createContainer();
     const commandManager: CommandManager = {
         create: (slice, value) => {
-            const commandChain = container.getSliceByName<Container>(slice.name)
-                ?? createSlice<Container>(createContainer(), slice.name)(container.sliceMap);
-            slice(commandChain.get().sliceMap, value)
+            const cmdChainSlice = container.getSliceByName<Container>(slice.sliceName)
+                ?? createSlice<Container>(createContainer(), slice.sliceName)(container.sliceMap);
+            const chainContainer = cmdChainSlice.get();
+            slice(chainContainer.sliceMap, value);
+            cmdChainSlice.set(chainContainer);
         },
         get: (slice) => {
-            return container.getSliceByName<Container>(slice.name)?.get().getSlice(slice).get();
+            return container.getSliceByName<Container>(slice.sliceName)?.get().getSlice(slice).get();
         },
         getByName: (name: string) => {
             const slice = container.getSliceByName<Container>(name)?.get().getSliceByName(name);
